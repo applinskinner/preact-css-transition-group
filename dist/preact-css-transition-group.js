@@ -542,41 +542,42 @@ var CSSTransitionGroup = function (_Component) {
 			});
 		}
 
-		this.setState({ children: newChildren });
-		this.forceUpdate();
+		this.setState({ children: newChildren }, function () {
+			_this2.forceUpdate();
 
-		nextChildMapping.forEach(function (c) {
-			var key = c.key,
-			    hasPrev = prevChildMapping && inChildren(prevChildMapping, c);
+			nextChildMapping.forEach(function (c) {
+				var key = c.key,
+				    hasPrev = prevChildMapping && inChildren(prevChildMapping, c);
 
-			if (showProp) {
-				if (hasPrev) {
-					var showInPrev = isShownInChildren(prevChildMapping, c, showProp),
-					    showInNow = c.props[showProp];
-					if (!showInPrev && showInNow && !_this2.currentlyTransitioningKeys[key]) {
-						_this2.keysToEnter.push(key);
+				if (showProp) {
+					if (hasPrev) {
+						var showInPrev = isShownInChildren(prevChildMapping, c, showProp),
+						    showInNow = c.props[showProp];
+						if (!showInPrev && showInNow && !_this2.currentlyTransitioningKeys[key]) {
+							_this2.keysToEnter.push(key);
+						}
 					}
+				} else if (!hasPrev && !_this2.currentlyTransitioningKeys[key]) {
+					_this2.keysToEnter.push(key);
 				}
-			} else if (!hasPrev && !_this2.currentlyTransitioningKeys[key]) {
-				_this2.keysToEnter.push(key);
-			}
-		});
+			});
 
-		prevChildMapping.forEach(function (c) {
-			var key = c.key,
-			    hasNext = nextChildMapping && inChildren(nextChildMapping, c);
+			prevChildMapping.forEach(function (c) {
+				var key = c.key,
+				    hasNext = nextChildMapping && inChildren(nextChildMapping, c);
 
-			if (showProp) {
-				if (hasNext) {
-					var showInNext = isShownInChildren(nextChildMapping, c, showProp);
-					var showInNow = c.props[showProp];
-					if (!showInNext && showInNow && !_this2.currentlyTransitioningKeys[key]) {
-						_this2.keysToLeave.push(key);
+				if (showProp) {
+					if (hasNext) {
+						var showInNext = isShownInChildren(nextChildMapping, c, showProp);
+						var showInNow = c.props[showProp];
+						if (!showInNext && showInNow && !_this2.currentlyTransitioningKeys[key]) {
+							_this2.keysToLeave.push(key);
+						}
 					}
+				} else if (!hasNext && !_this2.currentlyTransitioningKeys[key]) {
+					_this2.keysToLeave.push(key);
 				}
-			} else if (!hasNext && !_this2.currentlyTransitioningKeys[key]) {
-				_this2.keysToLeave.push(key);
-			}
+			});
 		});
 	};
 

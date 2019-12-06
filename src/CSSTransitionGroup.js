@@ -67,41 +67,42 @@ export class CSSTransitionGroup extends Component {
 			newChildren.forEach( c => this.stop(getKey(c)) );
 		}
 
-		this.setState({ children: newChildren });
-		this.forceUpdate();
+		this.setState({ children: newChildren }, () => {
+			this.forceUpdate();
 
-		nextChildMapping.forEach( c => {
-			let { key } = c,
-				hasPrev = prevChildMapping && inChildren(prevChildMapping, c);
-			if (showProp) {
-				if (hasPrev) {
-					let showInPrev = isShownInChildren(prevChildMapping, c, showProp),
-						showInNow = c.props[showProp];
-					if (!showInPrev && showInNow && !this.currentlyTransitioningKeys[key]) {
-						this.keysToEnter.push(key);
+			nextChildMapping.forEach( c => {
+				let { key } = c,
+					hasPrev = prevChildMapping && inChildren(prevChildMapping, c);
+				if (showProp) {
+					if (hasPrev) {
+						let showInPrev = isShownInChildren(prevChildMapping, c, showProp),
+							showInNow = c.props[showProp];
+						if (!showInPrev && showInNow && !this.currentlyTransitioningKeys[key]) {
+							this.keysToEnter.push(key);
+						}
 					}
 				}
-			}
-			else if (!hasPrev && !this.currentlyTransitioningKeys[key]) {
-				this.keysToEnter.push(key);
-			}
-		});
+				else if (!hasPrev && !this.currentlyTransitioningKeys[key]) {
+					this.keysToEnter.push(key);
+				}
+			});
 
-		prevChildMapping.forEach( c => {
-			let { key } = c,
-				hasNext = nextChildMapping && inChildren(nextChildMapping, c);
-			if (showProp) {
-				if (hasNext) {
-					let showInNext = isShownInChildren(nextChildMapping, c, showProp);
-					let showInNow = c.props[showProp];
-					if (!showInNext && showInNow && !this.currentlyTransitioningKeys[key]) {
-						this.keysToLeave.push(key);
+			prevChildMapping.forEach( c => {
+				let { key } = c,
+					hasNext = nextChildMapping && inChildren(nextChildMapping, c);
+				if (showProp) {
+					if (hasNext) {
+						let showInNext = isShownInChildren(nextChildMapping, c, showProp);
+						let showInNow = c.props[showProp];
+						if (!showInNext && showInNow && !this.currentlyTransitioningKeys[key]) {
+							this.keysToLeave.push(key);
+						}
 					}
 				}
-			}
-			else if (!hasNext && !this.currentlyTransitioningKeys[key]) {
-				this.keysToLeave.push(key);
-			}
+				else if (!hasNext && !this.currentlyTransitioningKeys[key]) {
+					this.keysToLeave.push(key);
+				}
+			});
 		});
 	}
 
